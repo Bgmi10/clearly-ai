@@ -19,5 +19,6 @@ export const DEVELOPER = {
   bio: "I design and build fast, reliable web apps and AI features with Next.js, Tailwind, Prisma and Postgres. This demo was built by me.",
   email: "subashchandraboseravi45@gmail.com",
   whatsapp: "+917845442450", // digits only, with country code
+  website: "https://moviespot.space/developer-profile",
   github: "https://github.com/Bgmi10",
 };
