@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A chat thread. Scoped to an anonymous visitor via a cookie id, so no sign-up is needed.
+model Conversation {
+  id        String    @id @default(cuid())
+  sid       String
+  title     String    @default("New chat")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+
+  @@index([sid, updatedAt])
+}
+
+// Every message. Assistant rows also carry token counts and a hashed IP,
+// which doubles as the usage ledger for rate limits and the daily budget.
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // "user" | "assistant"
+  content        String
+  inputTokens    Int          @default(0)
+  outputTokens   Int          @default(0)
+  ipHash         String       @default("")
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([ipHash, createdAt])
+  @@index([createdAt])
+}
